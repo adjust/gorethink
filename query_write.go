@@ -28,7 +28,7 @@ func (t RqlTerm) Insert(arg interface{}, optArgs ...InsertOpts) RqlTerm {
 	if len(optArgs) >= 1 {
 		opts = optArgs[0].toMap()
 	}
-	return newRqlTermFromPrevVal(t, "Insert", p.Term_INSERT, []interface{}{funcWrap(arg)}, opts)
+	return newRqlTermFromPrevVal(t, "Insert", p.Term_INSERT, []interface{}{exprJson(arg, 20)}, opts)
 }
 
 type UpdateOpts struct {

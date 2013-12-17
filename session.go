@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+var Profmap map[string]time.Duration = map[string]time.Duration{}
+
 type Session struct {
 	token      int64
 	address    string

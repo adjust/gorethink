@@ -1,6 +1,7 @@
 package gorethink
 
 import (
+	"encoding/json"
 	"github.com/dancannon/gorethink/encoding"
 	p "github.com/dancannon/gorethink/ql2"
 	"reflect"
@@ -105,6 +106,176 @@ func expr(value interface{}, depth int) RqlTerm {
 			termType: p.Term_DATUM,
 			data:     val,
 		}
+	}
+}
+
+func exprJson(value interface{}, depth int) RqlTerm {
+	if depth <= 0 {
+		panic("Maximum nesting depth limit exceeded")
+	}
+
+	if value == nil {
+		return RqlTerm{
+			termType: p.Term_DATUM,
+			data:     nil,
+		}
+	}
+	if isJson(value, depth) {
+		b, err := json.Marshal(value)
+		if err != nil {
+			panic("Error encoding expression as JSON")
+		}
+
+		return Json(string(b))
+	}
+
+	switch val := value.(type) {
+	case RqlTerm:
+		return val
+	case time.Time:
+		return EpochTime(val.Unix())
+	case []interface{}:
+		vals := []RqlTerm{}
+		for _, v := range val {
+			vals = append(vals, expr(v, depth))
+		}
+
+		return makeArray(vals)
+	case map[string]interface{}:
+		vals := map[string]RqlTerm{}
+		for k, v := range val {
+			vals[k] = expr(v, depth)
+		}
+
+		return makeObject(vals)
+	default:
+		// Use reflection to check for other types
+		typ := reflect.TypeOf(val)
+		rval := reflect.ValueOf(val)
+
+		if typ.Kind() == reflect.Ptr || typ.Kind() == reflect.Interface {
+			v := reflect.ValueOf(val)
+
+			if v.IsNil() {
+				return RqlTerm{
+					termType: p.Term_DATUM,
+					data:     nil,
+				}
+			}
+
+			val = v.Elem().Interface()
+			typ = reflect.TypeOf(val)
+		}
+
+		if typ.Kind() == reflect.Func {
+			return makeFunc(val)
+		}
+		if typ.Kind() == reflect.Struct {
+			data, err := encoding.Encode(val)
+
+			if err != nil || data == nil {
+				return RqlTerm{
+					termType: p.Term_DATUM,
+					data:     nil,
+				}
+			}
+
+			return exprJson(data, depth-1)
+		}
+		if typ.Kind() == reflect.Slice || typ.Kind() == reflect.Array {
+			vals := []RqlTerm{}
+			for i := 0; i < rval.Len(); i++ {
+				vals = append(vals, expr(rval.Index(i).Interface(), depth))
+			}
+
+			return makeArray(vals)
+		}
+		if typ.Kind() == reflect.Map {
+			vals := map[string]RqlTerm{}
+			for _, k := range rval.MapKeys() {
+				vals[k.String()] = expr(rval.MapIndex(k).Interface(), depth)
+			}
+
+			return makeObject(vals)
+		}
+
+		// If no other match was found then return a datum value
+		return expr(val, depth-1)
+	}
+}
+
+func isJson(value interface{}, depth int) bool {
+	if depth <= 0 {
+		panic("Maximum nesting depth limit exceeded")
+	}
+
+	if value == nil {
+		return true
+	}
+
+	switch val := value.(type) {
+	case RqlTerm:
+		return false
+	case time.Time:
+		return false
+	case []interface{}:
+		for _, v := range val {
+			if !isJson(v, depth-1) {
+				return false
+			}
+		}
+
+		return true
+	case map[string]interface{}:
+		for _, v := range val {
+			if !isJson(v, depth-1) {
+				return false
+			}
+		}
+
+		return true
+	default:
+		// Use reflection to check for other types
+		typ := reflect.TypeOf(val)
+		rval := reflect.ValueOf(val)
+
+		if typ.Kind() == reflect.Ptr || typ.Kind() == reflect.Interface {
+			v := reflect.ValueOf(val)
+
+			if v.IsNil() {
+				return true
+			}
+
+			val = v.Elem().Interface()
+			typ = reflect.TypeOf(val)
+		}
+
+		if typ.Kind() == reflect.Func {
+			return false
+		}
+		if typ.Kind() == reflect.Struct {
+			return false
+		}
+		if typ.Kind() == reflect.Slice || typ.Kind() == reflect.Array {
+			for i := 0; i < rval.Len(); i++ {
+				if !isJson(rval.Index(i).Interface(), depth-1) {
+					return false
+				}
+			}
+
+			return true
+		}
+		if typ.Kind() == reflect.Map {
+			for _, k := range rval.MapKeys() {
+				if !isJson(rval.MapIndex(k).Interface(), depth-1) {
+					return false
+				}
+			}
+
+			return true
+		}
+
+		return true
 	}
 }
 

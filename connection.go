@@ -75,6 +75,8 @@ func (c *Connection) SendQuery(s *Session, q *p.Query, t RqlTerm, opts map[strin
 		c.SetDeadline(time.Now().Add(s.timeout))
 	}
 
+	start := time.Now()
+
 	// Send query
 	if data, err = proto.Marshal(q); err != nil {
 		return nil, err
@@ -104,11 +106,15 @@ func (c *Connection) SendQuery(s *Session, q *p.Query, t RqlTerm, opts map[strin
 		return nil, err
 	}
 
+	Profmap["send"] += time.Since(start)
+	start2 := time.Now()
+
 	r := &p.Response{}
 	err = proto.Unmarshal(buffer, r)
 	if err != nil {
 		return nil, err
 	}
+	Profmap["proto_unmarshal"] += time.Since(start2)
 
 	// Ensure that this is the response we were expecting
 	if q.GetToken() != r.GetToken() {
