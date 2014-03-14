@@ -1,8 +1,8 @@
 package gorethink
 
 import (
-	"code.google.com/p/goprotobuf/proto"
-	p "github.com/dancannon/gorethink/ql2"
+	"github.com/adjust/goprotobuf/proto"
+	p "github.com/adjust/gorethink/ql2"
 	"sync/atomic"
 	"time"
 )

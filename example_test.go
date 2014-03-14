@@ -2,7 +2,7 @@ package gorethink_test
 
 import (
 	"fmt"
-	r "github.com/dancannon/gorethink"
+	r "github.com/adjust/gorethink"
 	"log"
 	"os"
 )

@@ -2,10 +2,10 @@ package gorethink
 
 import (
 	"bufio"
-	"code.google.com/p/goprotobuf/proto"
 	"encoding/binary"
 	"fmt"
-	p "github.com/dancannon/gorethink/ql2"
+	"github.com/adjust/goprotobuf/proto"
+	p "github.com/adjust/gorethink/ql2"
 	"io"
 	"net"
 	"time"

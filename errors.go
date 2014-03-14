@@ -2,7 +2,7 @@ package gorethink
 
 import (
 	"fmt"
-	p "github.com/dancannon/gorethink/ql2"
+	p "github.com/adjust/gorethink/ql2"
 )
 
 // Connection/Response errors

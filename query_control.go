@@ -1,8 +1,8 @@
 package gorethink
 
 import (
-	"github.com/dancannon/gorethink/encoding"
-	p "github.com/dancannon/gorethink/ql2"
+	"github.com/adjust/gorethink/encoding"
+	p "github.com/adjust/gorethink/ql2"
 	"reflect"
 	"time"
 )

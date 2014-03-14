@@ -19,7 +19,7 @@ package gorethink
 import (
 	"container/list"
 	"errors"
-	p "github.com/dancannon/gorethink/ql2"
+	p "github.com/adjust/gorethink/ql2"
 	"sync"
 	"time"
 )

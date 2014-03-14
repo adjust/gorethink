@@ -1,9 +1,9 @@
 package gorethink
 
 import (
-	"code.google.com/p/goprotobuf/proto"
-	"github.com/dancannon/gorethink/encoding"
-	p "github.com/dancannon/gorethink/ql2"
+	"github.com/adjust/goprotobuf/proto"
+	"github.com/adjust/gorethink/encoding"
+	p "github.com/adjust/gorethink/ql2"
 	"math"
 	"strconv"
 	"strings"

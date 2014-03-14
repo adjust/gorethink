@@ -2,14 +2,14 @@
 
 [![wercker status](https://app.wercker.com/status/e315e764041af8e80f0c68280d4b4de2/m "wercker status")](https://app.wercker.com/project/bykey/e315e764041af8e80f0c68280d4b4de2)
 
-[Go](http://golang.org/) driver for [RethinkDB](http://www.rethinkdb.com/) made by [Daniel Cannon](http://github.com/dancannon) and based off of Christopher Hesse's [RethinkGo](https://github.com/christopherhesse/rethinkgo) driver.
+[Go](http://golang.org/) driver for [RethinkDB](http://www.rethinkdb.com/) made by [Daniel Cannon](http://github.com/adjust) and based off of Christopher Hesse's [RethinkGo](https://github.com/christopherhesse/rethinkgo) driver.
 
-Current supported RethinkDB version: 1.11 | Documentation: [GoDoc](http://godoc.org/github.com/dancannon/gorethink)
+Current supported RethinkDB version: 1.11 | Documentation: [GoDoc](http://godoc.org/github.com/adjust/gorethink)
 
 ## Installation
 
 ```sh
-go get -u github.com/dancannon/gorethink
+go get -u github.com/adjust/gorethink
 ```
 
 If you do not have the [goprotobuf](https://code.google.com/p/goprotobuf/) runtime installed, it is required:
@@ -27,7 +27,7 @@ Setting up a basic connection with RethinkDB is simple:
 
 ```go
 import (
-    r "github.com/dancannon/gorethink"
+    r "github.com/adjust/gorethink"
 )
 
 var session *r.Session
@@ -43,7 +43,7 @@ session, err := r.Connect(map[string]interface{}{
     }
 
 ```
-See the [documentation](http://godoc.org/github.com/dancannon/gorethink#Connect) for a list of supported arguments to Connect().
+See the [documentation](http://godoc.org/github.com/adjust/gorethink#Connect) for a list of supported arguments to Connect().
 
 ### Connection Pool
 
@@ -51,7 +51,7 @@ The driver uses a connection pool at all times, however by default there is only
 
 ```go
 import (
-    r "github.com/dancannon/gorethink"
+    r "github.com/adjust/gorethink"
 )
 
 var session *r.Session
@@ -68,13 +68,13 @@ session, err := r.Connect(map[string]interface{}{
     }
 ```
 
-A pre-configured [Pool](http://godoc.org/github.com/dancannon/gorethink#Pool) instance can also be passed to Connect().
+A pre-configured [Pool](http://godoc.org/github.com/adjust/gorethink#Pool) instance can also be passed to Connect().
 
 ## Query Functions
 
 This library is based on the official drivers so the code on the [API](http://www.rethinkdb.com/api/) page should require very few changes to work.
 
-To view full documentation for the query functions check the [GoDoc](http://godoc.org/github.com/dancannon/gorethink#RqlTerm)
+To view full documentation for the query functions check the [GoDoc](http://godoc.org/github.com/adjust/gorethink#RqlTerm)
 
 Slice Expr Example
 ```go
@@ -195,7 +195,7 @@ func (a A) FieldMap() map[string]string {
 
 ## Examples
 
-View other examples on the [wiki](https://github.com/dancannon/gorethink/wiki/Examples).
+View other examples on the [wiki](https://github.com/adjust/gorethink/wiki/Examples).
 
 ## License
 
